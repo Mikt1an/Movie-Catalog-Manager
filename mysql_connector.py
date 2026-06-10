@@ -69,11 +69,11 @@ class Command(DBSQL):
         return self._execute(text)
 
     def count_films_by_keyword(self, keyword, search_field):
-        if search_field == "1":
+        if search_field == 1:
             condition = "film.title LIKE %s"
-        elif search_field == "2":
+        elif search_field == 2:
             condition = "film.description LIKE %s"
-        elif search_field == "3":
+        elif search_field == 3:
             condition = """
                 EXISTS (
                     SELECT 1
@@ -103,11 +103,11 @@ class Command(DBSQL):
             limit=10,
             offset=0
     ):
-        if search_field == "1":
+        if search_field == 1:
             condition = "film.title LIKE %s"
-        elif search_field == "2":
+        elif search_field == 2:
             condition = "film.description LIKE %s"
-        elif search_field == "3":
+        elif search_field == 3:
             condition = """
                 EXISTS (
                     SELECT 1

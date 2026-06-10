@@ -50,15 +50,15 @@ class MainApp(sql.Command, LogWriter):
 
     def os_menu(self):
         match self.menu:
-            case "1":
+            case 1:
                 self.search_films_by_keyword()
-            case "2":
+            case 2:
                 self.search_films_genre_year_range()
-            case "3":
+            case 3:
                 self.popular_searches()
-            case "4":
+            case 4:
                 self.last_searches()
-            case "0":
+            case 0:
                 print("Goodbye!")
                 return "0"
             case _:
@@ -66,11 +66,10 @@ class MainApp(sql.Command, LogWriter):
 
     def search_films_by_keyword(self):
         self.search_field = self._menu_keyword()
-
         if self.search_field is None:
             return
 
-        self.keyword = input("Enter search keyword: ")
+        self.keyword = self.get_input("Enter search keyword: ")
 
         self._total = self.count_films_by_keyword(
             self.keyword,
@@ -112,13 +111,15 @@ class MainApp(sql.Command, LogWriter):
                 "2. Description\n"
                 "3. Actors\n"
             )
-            search_field = input("\nChoose search field: ")
-            if search_field in "123":
+            search_field = self.get_input("\nChoose search field: ",
+                                          int
+                                          )
+
+            if search_field in (1, 2, 3):
                 return search_field
-            elif search_field == "0":
+            elif search_field == 0:
                 return None
             print("Invalid option. Try again.")
-
 
     def search_films_genre_year_range(self):
         """
@@ -136,22 +137,35 @@ class MainApp(sql.Command, LogWriter):
         print(f"All available years: "
               f"{years['min_year']} - {years['max_year']}"
               )
-        number_genre = input("Enter number genre: ")
+        number_genre = self.get_input("Enter number genre: ", int)
+
         genre_name = None
-        for category in categories:
-            if str(category["category_id"]) == number_genre:
-                genre_name = category["name"]
-                break
+        while genre_name is None:
+            number_genre = self.get_input(
+                "Enter number genre: ",
+                int
+            )
+
+            for category in categories:
+                if int(category["category_id"]) == number_genre:
+                    genre_name = category["name"]
+                    break
+
+            if genre_name is None:
+                print("Invalid genre number. Try again.")
 
         years = self.get_min_max_years(number_genre)
 
-        number_min_year = input(
+        number_min_year = self.get_input(
             f"Enter minimum year from {years['min_year']} "
-            f"since {years['max_year']}: "
+            f"since {years['max_year']}: ",
+                                         int,
         )
-        number_max_year = input(
+
+        number_max_year = self.get_input(
             f"Enter maximum year from {number_min_year} "
-            f"since {years['max_year']}: "
+            f"since {years['max_year']}: ",
+                                         int,
         )
 
         self._total = self.count_films_by_category_and_years(
@@ -181,8 +195,6 @@ class MainApp(sql.Command, LogWriter):
             number_min_year,
             number_max_year,
         )
-        if res is None:
-            return
 
     def popular_searches(self):
         print()
@@ -293,11 +305,11 @@ class MainApp(sql.Command, LogWriter):
 
                 print("-" * 50)
 
-            choice = input(
+            choice = self.get_input(
                 "\n[N]ext 10 results\n"
                 "[B]ack 10 results\n"
                 "[M]ain menu\n"
-                "Choose: "
+                "Choose: ",
             ).lower()
 
             if choice == "n":
@@ -317,12 +329,26 @@ class MainApp(sql.Command, LogWriter):
             else:
                 print("Invalid option. Try again.")
 
+    def get_input(
+            self,
+            message,
+            value_type=str
+    ):
+        while True:
+            try:
+                return value_type(input(message))
+            except ValueError:
+                print(
+                    f"Please enter a valid "
+                    f"{value_type.__name__}."
+                )
+
     def run(self):
-        with self:
+        with (self):
             while True:
                 self.show_menu()
-                self.menu = input("Enter number: ")
-                if self.os_menu() == "0":
+                self.menu = self.get_input("Enter number: ", int)
+                if self.os_menu() == 0:
                     break
 
 
