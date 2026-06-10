@@ -1,17 +1,6 @@
 import mysql_connector as sql
 from log_writer import LogWriter
-from functools import wraps
-
-
-def frame(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        print("=" * 50)
-        result = func(*args, **kwargs)
-        print("=" * 50)
-        return result
-    return wrapper
-
+from decorators import Decorator
 
 class MainApp(sql.Command, LogWriter):
     """
@@ -38,7 +27,7 @@ class MainApp(sql.Command, LogWriter):
         LogWriter.__exit__(self, exc_type, exc_val, exc_tb)
         return False
 
-    @frame
+    @Decorator.frame
     def show_menu(self):
         print("--- Sakila Movie Explorer ---".center(50),
               "\n0. Exit\n"
@@ -265,7 +254,7 @@ class MainApp(sql.Command, LogWriter):
                       f"{created_at:%d.%m.%Y %H:%M}")
         print()
 
-    @frame
+    @Decorator.frame
     def _choice_menu(self, search_func, *args):
         """
         Displays paginated search results

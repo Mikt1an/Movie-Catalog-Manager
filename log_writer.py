@@ -2,8 +2,13 @@ import os
 from datetime import datetime
 from urllib.parse import quote_plus
 
-import dotenv
 from pymongo import MongoClient
+from pymongo.errors import PyMongoError
+
+from decorators import Decorator
+
+import dotenv
+
 
 dotenv.load_dotenv()
 
@@ -54,6 +59,7 @@ class LogWriter:
         self.__client.close()
         return False
 
+    @Decorator.handle_errors(PyMongoError, default_return=None)
     def save_search_query(self, search_type, query_data, total_results):
         document = {
             "search_type": search_type,

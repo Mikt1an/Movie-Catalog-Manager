@@ -1,7 +1,10 @@
 import os
-import pymysql
+
 import dotenv
+import pymysql
+from pymysql import MySQLError
 from pymysql.cursors import DictCursor
+from decorators import Decorator
 
 dotenv.load_dotenv()
 
@@ -41,6 +44,7 @@ class DBSQL():
         self.__conn.close()
         return False
 
+    @Decorator.handle_errors(MySQLError, default_return=[])
     def _execute(self, query, params = None):
         self.__cursor.execute(query, params)
         return self.__cursor.fetchall()
