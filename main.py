@@ -60,7 +60,7 @@ class MainApp(sql.Command, LogWriter):
                 self.last_searches()
             case 0:
                 print("Goodbye!")
-                return "0"
+                return 0
             case _:
                 print("Invalid option. Try again.")
 
@@ -137,7 +137,6 @@ class MainApp(sql.Command, LogWriter):
         print(f"All available years: "
               f"{years['min_year']} - {years['max_year']}"
               )
-        number_genre = self.get_input("Enter number genre: ", int)
 
         genre_name = None
         while genre_name is None:
@@ -156,16 +155,18 @@ class MainApp(sql.Command, LogWriter):
 
         years = self.get_min_max_years(number_genre)
 
-        number_min_year = self.get_input(
-            f"Enter minimum year from {years['min_year']} "
-            f"since {years['max_year']}: ",
-                                         int,
+        number_min_year = self.get_year(
+            f"Enter minimum year from "
+            f"{years['min_year']} to {years['max_year']}: ",
+            years["min_year"],
+            years["max_year"]
         )
 
-        number_max_year = self.get_input(
-            f"Enter maximum year from {number_min_year} "
-            f"since {years['max_year']}: ",
-                                         int,
+        number_max_year = self.get_year(
+            f"Enter maximum year from "
+            f"{number_min_year} to {years['max_year']}: ",
+            number_min_year,
+            years["max_year"]
         )
 
         self._total = self.count_films_by_category_and_years(
@@ -342,6 +343,23 @@ class MainApp(sql.Command, LogWriter):
                     f"Please enter a valid "
                     f"{value_type.__name__}."
                 )
+
+    def get_year(
+            self,
+            message,
+            min_year,
+            max_year
+    ):
+        while True:
+            year = self.get_input(message, int)
+
+            if min_year <= year <= max_year:
+                return year
+
+            print(
+                f"Year must be between "
+                f"{min_year} and {max_year}."
+            )
 
     def run(self):
         with (self):
