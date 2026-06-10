@@ -1,0 +1,6 @@
+dnspython==2.8.0
+dotenv==0.9.9
+pygame-ce==2.5.7
+pymongo==4.17.0
+PyMySQL==1.2.0
+python-dotenv==1.2.2
