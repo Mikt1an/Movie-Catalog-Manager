@@ -1,28 +1,39 @@
 # Sakila Movie Explorer
 
-Interactive console application for searching movies in the Sakila MySQL database.
+Interactive console application for searching movies in the Sakila MySQL database with search history logging in MongoDB.
 
 ## Features
 
 * Search films by keyword
-* Search by title, description, or actor name
-* Search films by category and release year range
-* Paginated output (10 films per page)
-* Save search history in MongoDB
-* Show 5 most popular searches
-* Show last 5 searches
-* Display film information:
+* Search by:
 
   * Title
   * Description
-  * Release year
+  * Actor name
+* Search films by category and release year range
+* Input validation for:
+
+  * Menu selections
+  * Genre selection
+  * Year ranges
+* Paginated results (10 films per page)
+* Display film information:
+
+  * Film ID
+  * Title
+  * Release Year
   * Rating
   * Category
+  * Short Description
+* Save search history in MongoDB
+* Show 5 most popular searches
+* Show last 5 searches
+* Error handling with reusable decorators
 
 ## Technologies
 
 * Python 3
-* MySQL
+* MySQL (Sakila)
 * MongoDB
 * PyMySQL
 * PyMongo
@@ -32,17 +43,28 @@ Interactive console application for searching movies in the Sakila MySQL databas
 
 ```text
 Movie-Catalog-Manager/
+│
 ├── main.py
+│   └── Application interface and business logic
+│
 ├── mysql_connector.py
+│   └── MySQL database operations
+│
 ├── log_writer.py
+│   └── MongoDB logging and statistics
+│
+├── decorators.py
+│   └── Reusable decorators
+│
 ├── requirements.txt
+├── README.md
 ├── .env.example
-└── README.md
+└── .gitignore
 ```
 
 ## Environment Variables
 
-Create a `.env` file in the project root directory:
+Create a `.env` file:
 
 ```env
 DB_HOST=
@@ -58,13 +80,13 @@ DB_NAME_MONGO=
 
 ## Installation
 
-Install project dependencies:
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Run Application
+## Run
 
 ```bash
 python main.py
@@ -90,33 +112,24 @@ Users can search films by:
 3. Actors
 ```
 
-The application displays:
-
-* Film ID
-* Title
-* Release Year
-* Rating
-* Category
-* Short Description
-
 ## Search History
 
-All search queries are stored in MongoDB collection:
+All searches are stored in MongoDB collection:
 
 ```text
 final_project_121225_anton_samoilenko
 ```
 
-Stored information includes:
+Each record contains:
 
 * Search type
 * Search parameters
 * Number of results found
 * Timestamp
 
-
 ## Author
 
 Anton Samoilenko
 
 Final Project — Python Developer Course
+
