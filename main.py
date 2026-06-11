@@ -354,7 +354,10 @@ class MainApp(sql.Command, LogWriter):
         with (self):
             while True:
                 self.show_menu()
-                self.menu = self.get_input("Enter number: ", int)
+                self.menu = self.get_input(
+                    "Enter number: ",
+                    int
+                )
                 if self.os_menu() == 0:
                     break
 

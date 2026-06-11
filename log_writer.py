@@ -36,21 +36,20 @@ class LogWriter:
         user = quote_plus(os.getenv("DB_USER_MONGO"))
         password = quote_plus(os.getenv("DB_PASSWORD_MONGO"))
         host = os.getenv("DB_HOST_MONGO")
-        db_name = os.getenv("DB_NAME_MONGO")
+        self.__db_name = os.getenv("DB_NAME_MONGO")
 
-        mongo_uri = (
+        self.__mongo_uri = (
             f"mongodb://{user}:{password}@{host}/"
             f"?readPreference=primary"
             f"&ssl=false"
             f"&authMechanism=DEFAULT"
-            f"&authSource={db_name}"
+            f"&authSource={self.__db_name}"
         )
 
-        self.__client = MongoClient(mongo_uri)
-        self.__db = self.__client[db_name]
-        self._collection = self.__db[LogWriter.COLLECTION_NAME]
-
     def __enter__(self):
+        self.__client = MongoClient(self.__mongo_uri)
+        self.__db = self.__client[self.__db_name]
+        self._collection = self.__db[LogWriter.COLLECTION_NAME]
         self.__client.admin.command("ping")
         print("Connection MongoDB successful!")
         return self
